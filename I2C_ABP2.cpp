@@ -23,7 +23,7 @@ I2C_ABP2::I2C_ABP2(uint8_t address, TwoWire *wire)
 }
 
 
-bool I2C_ABP2::begin(uint32_t minBar, uint32_t maxBar)
+bool I2C_ABP2::begin(float minBar, float maxBar)
 {
   _minBar = minBar;
   _maxBar = maxBar;

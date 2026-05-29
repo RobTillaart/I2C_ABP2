@@ -21,7 +21,7 @@ void setup()
   Serial.println();
 
   Wire.begin();
-  if (pres.begin(0, 100) == false)
+  if (pres.begin(0, 2.0) == false)
   {
     Serial.print("Error: Cannot find device: ");
     Serial.println(pres.getAddress());
