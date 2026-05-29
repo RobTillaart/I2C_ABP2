@@ -41,13 +41,18 @@ unittest_teardown()
 
 unittest(test_constants)
 {
-  assertEqual(1, 1);
+  assertEqual(   0, I2C_ABP2_OK           );
+  assertEqual(-100, I2C_ABP2_NOT_READY    );
+  assertEqual(-101, I2C_ABP2_REQUEST_ERROR);
 }
 
 
 unittest(test_constructor)
 {
-  I2C_ABP2 obj;
+  I2C_ABP2 sensor(0x28);
+  assertEqual(0x28, sensor.getAddress());
+
+  assertEqual(   0, sensor.lastRead());
 }
 
 
