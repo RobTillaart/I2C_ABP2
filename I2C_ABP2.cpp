@@ -2,7 +2,7 @@
 //    FILE: I2C_ABP2.cpp
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.1.0
-//    DATE: 2026-05-29
+//    DATE: 2026-05-27
 // PURPOSE: Arduino library for the Honeywell I2C ABP2 pressure sensors.
 //     URL: https://github.com/RobTillaart/I2C_ABP2
 //          https://github.com/RobTillaart/pressure   (conversions)
@@ -56,7 +56,7 @@ uint8_t I2C_ABP2::getAddress()
 
 /////////////////////////////////////////////
 //
-//  READ
+//  ASYNC INTERFACE
 //
 //  par 6.8 datasheet
 //  split into an ASYNC interface

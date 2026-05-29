@@ -3,7 +3,7 @@
 //    FILE: I2C_ABP2.h
 //  AUTHOR: Rob Tillaart
 // VERSION: 0.1.0
-//    DATE: 2026-05-29
+//    DATE: 2026-05-27
 // PURPOSE: Arduino library for the Honeywell I2C ABP2 pressure sensors.
 //     URL: https://github.com/RobTillaart/I2C_ABP2
 //          https://github.com/RobTillaart/pressure   (conversions)
@@ -31,7 +31,7 @@ class I2C_ABP2
 public:
   I2C_ABP2(uint8_t address, TwoWire *wire = &Wire);
 
-  bool     begin(uint32_t minBar, uint32_t maxBar);
+  bool     begin(float minBar, float maxBar);
   bool     isConnected();
   uint8_t  getAddress();
 
@@ -45,7 +45,6 @@ public:
   uint8_t  getState()    { return _state; };
   float    getBar()      { return _Bar;   };
   float    getMilliBar() { return _Bar * 1e3;  };
-  float    getKiloBar()  { return _Bar * 1e-3; };
   float    getCelsius()  { return _celsius; };
 
   //       DEBUG
@@ -57,8 +56,8 @@ private:
   TwoWire* _wire;
 
   uint32_t _lastRead;
-  uint32_t _minBar = 0;
-  uint32_t _maxBar = 1;
+  float    _minBar = 0;
+  float    _maxBar = 1;
   float    _Bar;
   uint8_t  _state;
   float    _celsius;

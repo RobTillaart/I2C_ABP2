@@ -27,8 +27,9 @@ The ABP2 sensor provides a pressure and a temperature measurement.
 Although technically one could read the pressure only, this optimization 
 is not supported by the library. It could be added in the future.
 
-As the sensor makes a measurement on request, which takes up to 10 milliseconds
-the library provides a separate request() and read() function. See below.
+As the sensor makes a measurement on request, which takes up to 10 milliseconds,
+the library provides a separate request() and read() function. 
+This to prevent a blocking call. See below.
 
 The library is written based upon the datasheet and is not tested 
 with hardware yet.
@@ -41,27 +42,29 @@ Feedback as always is welcome.
 Check datasheet table 20.
 
 ```
-        ABP2              ARDUINO
+        ABP2                MCU
     +----------+        +----------+
     |          |        |          |
     |       1 o|<------>|o GND     |
     |       2 o|<-------|o VCC     |
     |       3 o|------->|o EOC     |
     |       4 o|        |          |
-    |       5 o|--------|o SDA     |
-    |       6 o|--------|o SCL     |
+    |       5 o|<------>|o SDA     |
+    |       6 o|<-------|o SCL     |
     |          |        |          |
     +----------+        +----------+
 ```
 
-|  pin  |   name   |  description      |  Notes  |
-|:-----:|:--------:|:------------------|:-------:|
-|   1   |  GND     |  Ground             |  3-5V
-|   2   |  VCC     |  Power +5V          |  3-5V
-|   3   |  EOC     |  End Of Conversion  |          |
-|   4   |  NC      |  not connected      | 
+|  pin  |   name   |  description        |  Notes  |
+|:-----:|:--------:|:--------------------|:-------:|
+|   1   |  GND     |  Ground             |
+|   2   |  VCC     |  Power              |  TODO 3.3 or 5V.
+|   3   |  EOC     |  End Of Conversion  |  not supported yet.
+|   4   |  NC      |  not connected      |
 |   5   |  SDA     |  I2C data           |
-|   6   |  SCL     |  I2C clock          |
+|   6   |  SCL     |  I2C clock          |   max 400 kHz.
+
+The EOC pin is not supported in the library.
 
 
 ### Related
@@ -84,7 +87,7 @@ TODO:
 
 ## I2C
 
-The sensor supports up to 400 kbit/s.
+The sensor supports up to 400 kHz.
 
 ### I2C Address
 
@@ -130,10 +133,10 @@ Only test **read()** as that is the main function.
 
 |  Clock     |  time (us)  |  Notes  |
 |:----------:|:-----------:|:--------|
-|   100 KHz  |             |  default 
-|   200 KHz  |             |
-|   300 KHz  |             |
-|   400 KHz  |             |  max datasheet
+|   100 kHz  |             |  default 
+|   200 kHz  |             |
+|   300 kHz  |             |
+|   400 kHz  |             |  max datasheet
 
 
 ## Interface
@@ -145,16 +148,19 @@ Only test **read()** as that is the main function.
 ### Constructor
 
 - **I2C_ABP2(uint8_t address, TwoWire \*wire = &Wire)** optional select I2C bus.
-- **bool begin(float minBar, float maxBar)** checks if device is visible on the I2C bus.
+- **bool begin(float minBar, float maxBar)** user must provide the range of 
+the sensor in Bar (= 1000 mBar). 
+A call to begin() allows the user to adjust the range runtime.
+Returns true if the device is visible on the I2C bus, false otherwise.
 - **bool isConnected()** Checks if device address can be found on I2C bus.
-- **uint8_t getAddress()** Returns the fixed address 0x2A (42).
+- **uint8_t getAddress()** Returns the address set in constructor.
 
 
 ### Read
 
 The interface of the sensor is made asynchronous as there is a delay needed
 of around 10 milliseconds between a request for new data and the availability
-of that new data.
+of that new data. In this time the processor can do other tasks.
 
 - **int request()** request a new measurement.
 - **int read()** reads and converts the last measurement. 
@@ -186,12 +192,16 @@ data is read.
 #### Must
 
 - improve documentation
-- get hardware to test
+  - specs etc.
+- test => get hardware
 
 #### Should
 
 - add examples
+  - async demo
+  - error handling
 - improve error handling
+- investigate support for EOC pin.
 
 #### Could
 
@@ -200,6 +210,7 @@ data is read.
 - support status only reading for performance
 - support pressure only reading for performance
 - improve error handling
+- add getPSI() ? ==> pressure library.
 
 #### Wont
 
